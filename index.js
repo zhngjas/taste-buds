@@ -23,23 +23,13 @@ app.use(express.json())
 const api = require('./routes/api')
 app.use('/api', api)
 
-// mongoose.connect( 'mongodb+srv://dbuser:solarsystemdisco@cluster0.equ6dxc.mongodb.net/testBooks', (error) => {  
-//   if (error) handleError(error)
-//   else {
-//     console.log("MongoDB connected.")
-//     app.listen(()=>{
-//       console.log("Express is live.")
-//     })
-//   } 
-// }).catch((error) => handleError(error));
 
-
-mongoose.connect( 'mongodb+srv://dbuser:solarsystemdisco@cluster0.equ6dxc.mongodb.net/testBooks').catch((error => handleError(error)));
+mongoose.connect(process.env.MONGODB).catch((error => handleError(error)));
 const handleError = (error)=>{
     console.log("MongoDB connection failed.")
     console.log(error.message)
-    if ('mongodb+srv://dbuser:solarsystemdisco@cluster0.equ6dxc.mongodb.net/testBooks'){
-      console.log("MONGODB="+'mongodb+srv://dbuser:solarsystemdisco@cluster0.equ6dxc.mongodb.net/testBooks') 
+    if (process.env.MONGODB){
+      console.log("MONGODB="+process.env.MONGODB) 
     }    
     else{
       console.log("MONGODB environment variable not found.") 
