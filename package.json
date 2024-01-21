@@ -1,0 +1,31 @@
+{
+  "name": "taste-buds",
+  "version": "1.0.0",
+  "description": "A project to help new arrivals and travelers aclimate to a new country through food",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhngjas/taste-buds.git"
+  },
+  "author": "Jasmine Zhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhngjas/taste-buds/issues"
+  },
+  "homepage": "https://github.com/zhngjas/taste-buds#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "debug": "^4.3.4",
+    "dotenv": "^16.3.2",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.3",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.1.0",
+    "morgan": "^1.10.0"
+  }
+}
