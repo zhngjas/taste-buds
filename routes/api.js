@@ -9,38 +9,37 @@ const path = require('path')
 const uploadMaxSize = 5 * 1024 * 1024
 const uploadFolder = path.resolve(__dirname, '..', 'public', 'uploads')
 
-
 // FILE UPLOAD (ENDPOINT)
 // listen for a POST request with a file attachment.
 router.post("/file", (req, res) => {
-  // check if we recieved a file with the name "image"
-  if (req.files.image) {
-    // make sure the file isn't too big
-    if (req.files.image.size < uploadMaxSize) {
-      // get the file extension of the uploaded image
-      const fileExt = path.extname(req.files.image.name)
-      // generate a new filename based on the current time
-      const fileName = new Date().getTime() + fileExt
-      // define the destination for the upload
-      const destination = path.join(uploadFolder, fileName)
-      // move the uploaded file to its destination
-      req.files.image.mv(destination, (err) => {
-        // if successful send the fileName back to the frontend.
-        if (!err) res.send({ fileName: fileName })
-        // if we failed ot move the file, send an error
-        else res.status(500).send({ error: "File Save Failed" })
-      })
+    // check if we recieved a file with the name "image"
+    if (req.files.image) {
+      // make sure the file isn't too big
+      if (req.files.image.size < uploadMaxSize) {
+        // get the file extension of the uploaded image
+        const fileExt = path.extname(req.files.image.name)
+        // generate a new filename based on the current time
+        const fileName = new Date().getTime() + fileExt
+        // define the destination for the upload
+        const destination = path.join(uploadFolder, fileName)
+        // move the uploaded file to its destination
+        req.files.image.mv(destination, (err) => {
+          // if successful send the fileName back to the frontend.
+          if (!err) res.send({ fileName: fileName })
+          // if we failed ot move the file, send an error
+          else res.status(500).send({ error: "File Save Failed" })
+        })
+      }
+      else {
+        // if the file was too big, send an error
+        res.status(400).send({ error: "File Too Large" })
+      }
     }
     else {
-      // if the file was too big, send an error
-      res.status(400).send({ error: "File Too Large" })
+      // if no file was received, send an error
+      res.status(400).send({ error: "File Not Found" })
     }
-  }
-  else {
-    // if no file was received, send an error
-    res.status(400).send({ error: "File Not Found" })
-  }
-})
+  })
 
 // CREATE
 router.post('/foods', (req, res) => {
@@ -84,6 +83,7 @@ router.put('/foods/:id', (req, res) => {
     .then(food => res.send(food))
     .catch(err => res.status(500).send(err))
 })
+
 //DELETE
 router.delete('/foods/:id', (req, res) => {
   console.log(req.params.id)
@@ -92,4 +92,5 @@ router.delete('/foods/:id', (req, res) => {
     .catch(err => res.status(500).send(err))
 })
 
+  
 module.exports = router;

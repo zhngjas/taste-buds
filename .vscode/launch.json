@@ -15,7 +15,6 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "runArgs": ["--env-file", ".vscode/mongodb.env"],
             "type": "node"
         },
         {

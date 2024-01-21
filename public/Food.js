@@ -1,8 +1,9 @@
 export default class Food {
 
     constructor(data) {
-      // console.log("consutrctor")
+      console.log("consutrctor")
       this.importJSON(data)
+      console.log(data)
     }
   
     // Given the provided JSON data
@@ -19,13 +20,16 @@ export default class Food {
       this.completed = (this.completed == "on") ? true : false;
       // build a JSON object that the database will respect.
       return {
+        food1: this.food1,
+        cuisine1: this.cuisine1,
+        country1: this.country1,
+        food2: this.food2,
+        cuisine2: this.cuisine2,
+        country2: this.country2,
         title: this.title,
-        author: this.author,
         description: this.description,
-        quotation: this.quotation,
-        page: this.page,
-        completed: this.completed,
-        completedDate: this.completedDate,
+        tags: this.tags,
+        agrees: this.agrees,
         fileName: this.fileName
       }
     }
@@ -35,10 +39,10 @@ export default class Food {
     save = () => {
       console.log("save")
       let method = "POST"
-      let endpoint = '/api/book/'
+      let endpoint = '/api/foods/'
       if (this._id) {
         method = "PUT"
-        endpoint = '/api/book/' + this._id
+        endpoint = '/api/foods/' + this._id
       }
       fetch(endpoint, {
         method: method,
@@ -49,94 +53,88 @@ export default class Food {
         .then(data => {
           console.log(data)
           this.importJSON(data)
-          // add the newly created book to the page.
           this.render()
-          // auto scroll to the newly created book.
           $(`[id="${this._id}"]`).scrollIntoView()
         })
         .catch(error => console.log(error))
     }
   
-    // delete this book from the database.
-    // i.e. remove the data for this book from the database
-    // by means of an API endpoint using the DELETE method
     delete = () => {
-      fetch('/api/book/' + this._id, { "method": "DELETE" })
+      fetch('/api/foods/' + this._id, { "method": "DELETE" })
         .then(response => response.json())
         .then(response => {
-          // also remove book from page layout
           this.remove()
         })
         .catch(error => console.log(error))
     }
   
   
-    // Below we have a function that populates the HTML form with data
-    edit = () => {
-      const bookForm = $('#bookForm');
-      bookForm.elements['_id'].value = this._id
-      // bookForm.elements['title'].value = this.title
-      // bookForm.elements['author'].value = this.author
-      bookTitle.innerText = this.title
-      authorName.innerText = this.author
-      bookForm.elements['description'].value = this.description
-      bookForm.elements['quotation'].value = this.quotation
-      bookForm.elements['page'].value = this.page
-      bookForm.elements['completed'].checked = this.completed
-      // display the datepicker if the completed checkbox is checked
-      if (bookForm.elements['completed'].checked == true) {
-        dateContainer.style.display = 'flex'
-        bookForm.elements['completedDate'].value = this.completedDate?.slice(0, 10)
-      }
-      let displayImage = '/photo.svg'
-      if (this.fileName != "") {
-        displayImage = this.fileName
-      }
-      imgPreview.innerHTML = `<img class="image" src=${displayImage}>`
-      // set the heading for the form to match our intentions.
-      $('#bookForm h2').innerHTML = `Edit ${this.title}`
-      // make the form appear (normally it is set to display="none")
-      bookForm.style.display = 'flex'
-      // auto-scroll to the top of the page when editing a book.
-      $('body').scrollIntoView();
-      // hide other books when the edit form is open
-      mainContent.style.display = 'none';
+    // // Below we have a function that populates the HTML form with data
+    // edit = () => {
+    //   const bookForm = $('#bookForm');
+    //   bookForm.elements['_id'].value = this._id
+    //   // bookForm.elements['title'].value = this.title
+    //   // bookForm.elements['author'].value = this.author
+    //   bookTitle.innerText = this.title
+    //   authorName.innerText = this.author
+    //   bookForm.elements['description'].value = this.description
+    //   bookForm.elements['quotation'].value = this.quotation
+    //   bookForm.elements['page'].value = this.page
+    //   bookForm.elements['completed'].checked = this.completed
+    //   // display the datepicker if the completed checkbox is checked
+    //   if (bookForm.elements['completed'].checked == true) {
+    //     dateContainer.style.display = 'flex'
+    //     bookForm.elements['completedDate'].value = this.completedDate?.slice(0, 10)
+    //   }
+    //   let displayImage = '/photo.svg'
+    //   if (this.fileName != "") {
+    //     displayImage = this.fileName
+    //   }
+    //   imgPreview.innerHTML = `<img class="image" src=${displayImage}>`
+    //   // set the heading for the form to match our intentions.
+    //   $('#bookForm h2').innerHTML = `Edit ${this.title}`
+    //   // make the form appear (normally it is set to display="none")
+    //   bookForm.style.display = 'flex'
+    //   // auto-scroll to the top of the page when editing a book.
+    //   $('body').scrollIntoView();
+    //   // hide other books when the edit form is open
+    //   mainContent.style.display = 'none';
   
-    }
+    // }
   
-    // function to return to the main page when the expanded view is open
-    back = () => {
-      console.log("back")
-      // the book class styles the entry into a main page card
-      // the book class hides detail content shown in the expanded view (ex. "thoughts", edit and delete buttons, etc.)
-      // the bookDetail class reveals detail content that is hidden by the book class
-      // this function swaps these classes for the main page state
-      $(`[id="${this._id}"]`).classList.add('book')
-      $(`[id="${this._id}"]`).classList.remove('bookDetail')
-      // the button to add an entry is only displayed on the main page
-      addButton.style.display = 'block';
-      // the hide class holds display="none"
-      // elements in the list of books with the book class are looped through in order to remove the hide class
-      // all books are now displayed in the main page with the same styling
-      for (var i = 0; i < bookList.getElementsByClassName("book").length; i++) {
-        bookList.getElementsByClassName("book")[i].classList.remove('hide');
-      }
-    }
+    // // function to return to the main page when the expanded view is open
+    // back = () => {
+    //   console.log("back")
+    //   // the book class styles the entry into a main page card
+    //   // the book class hides detail content shown in the expanded view (ex. "thoughts", edit and delete buttons, etc.)
+    //   // the bookDetail class reveals detail content that is hidden by the book class
+    //   // this function swaps these classes for the main page state
+    //   $(`[id="${this._id}"]`).classList.add('book')
+    //   $(`[id="${this._id}"]`).classList.remove('bookDetail')
+    //   // the button to add an entry is only displayed on the main page
+    //   addButton.style.display = 'block';
+    //   // the hide class holds display="none"
+    //   // elements in the list of books with the book class are looped through in order to remove the hide class
+    //   // all books are now displayed in the main page with the same styling
+    //   for (var i = 0; i < bookList.getElementsByClassName("book").length; i++) {
+    //     bookList.getElementsByClassName("book")[i].classList.remove('hide');
+    //   }
+    // }
   
-    // remove this book from the page
-    remove = () => {
-      $(`[id="${this._id}"]`).remove();
-      console.log("104 remove");
-      // when a book is removed, the user is taken back to the main page
-      addButton.style.display = 'block';
-      // the delete button is only accessible in the expanded detail view
-      // when a book is deleted, all other books are still hidden
-      // loop through all the books to remove the hide class, and make them visible again
-      for (var i = 0; i < bookList.getElementsByClassName("book").length; i++) {
-        bookList.getElementsByClassName("book")[i].classList.remove('hide');
-        document.getElementsByClassName('book')[i].classList.remove('bookDetail')
-      }
-    }
+    // // remove this book from the page
+    // remove = () => {
+    //   $(`[id="${this._id}"]`).remove();
+    //   console.log("104 remove");
+    //   // when a book is removed, the user is taken back to the main page
+    //   addButton.style.display = 'block';
+    //   // the delete button is only accessible in the expanded detail view
+    //   // when a book is deleted, all other books are still hidden
+    //   // loop through all the books to remove the hide class, and make them visible again
+    //   for (var i = 0; i < bookList.getElementsByClassName("book").length; i++) {
+    //     bookList.getElementsByClassName("book")[i].classList.remove('hide');
+    //     document.getElementsByClassName('book')[i].classList.remove('bookDetail')
+    //   }
+    // }
   
     // function to display the expanded detail view
     detail = () => {
